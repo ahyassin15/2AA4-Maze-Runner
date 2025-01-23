@@ -46,29 +46,5 @@ public class Main {
         } catch (Exception e) {
             logger.error("An error occurred while reading the maze file", e);
         }
-
-        logger.info("End of MazeRunner");
-
-        System.out.println("**** Computing path");
-        System.out.println("PATH NOT COMPUTED");
-        System.out.println("** End of MazeRunner");
-    }
-
-    /**
-     * Get options for CLI parser.
-     *
-     * @return CLI parser options
-     */
-    private static Options getParserOptions() {
-        Options options = new Options();
-
-        Option fileOption = new Option("i", true, "File that contains maze");
-        fileOption.setRequired(true);
-        options.addOption(fileOption);
-
-        options.addOption(new Option("p", true, "Path to be verified in maze"));
-        options.addOption(new Option("method", true, "Specify which path computation algorithm will be used"));
-
-        return options;
     }
 }
