@@ -10,26 +10,26 @@ public class Main {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private Maze maze;
-
-    public static void main(String[] args) {
-
-        logger.info("** Starting Maze Runner");
-
-        Options options = new Options();
-        options.addOption("i", true, "input file");
-
-        CommandLineParser parser = new DefaultParser();
-
-        try {
-            
-            CommandLine cmd = parser.parse(options, args);
-            
-            if (cmd.hasOption("i")) {
+    private static Maze maze;
+    
+        public static void main(String[] args) {
+    
+            logger.info("** Starting Maze Runner");
+    
+            Options options = new Options();
+            options.addOption("i", true, "input file");
+    
+            CommandLineParser parser = new DefaultParser();
+    
+            try {
                 
-                String inputFile = cmd.getOptionValue("i");
-                logger.info("**** Reading the maze from file " + inputFile);
-                maze = new Maze(inputFile);
+                CommandLine cmd = parser.parse(options, args);
+                
+                if (cmd.hasOption("i")) {
+                    
+                    String inputFile = cmd.getOptionValue("i");
+                    logger.info("**** Reading the maze from file " + inputFile);
+                    maze = new Maze(inputFile);
 
             } else {
                 logger.error("Input file not provided. Use -i flag to specify the input file.");

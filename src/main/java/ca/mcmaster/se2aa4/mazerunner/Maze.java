@@ -51,18 +51,18 @@ public class Maze {
         return maze;
     }
 
-    public String[][] getMazeArray(){
+    public String[][] getMazeArray() {
         return mazeGrid;
     }
 
-    public void setMazeArray(String[][] mazeGrid){
+    public void setMazeArray(String[][] mazeGrid) {
         this.mazeGrid = mazeGrid;
     }
 
-    public void displayMaze(){
+    public void displayMaze() {
 
-        for (int i = 0; i < mazeGrid.length; i++){
-            for (int j = 0; j < mazeGrid[i].length; j++){
+        for (int i = 0; i < mazeGrid.length; i++) {
+            for (int j = 0; j < mazeGrid[i].length; j++) {
                 logger.info(mazeGrid[i][j]);
             }
             logger.info(System.lineSeparator());
@@ -70,11 +70,23 @@ public class Maze {
         
     }
 
-    public int[] getEntryPoint(){
+    public int[] getEntryPoint() {
 
+        for (int i = 0; i < mazeGrid.length; i++) {
+            if (mazeGrid[i][0].equals(" ")) {
+                return new int[]{i, 0};
+            }
+        }
+        return null;
     }
 
-    public int[] getExitPoint(){
+    public int[] getExitPoint() {
 
+        for (int i = 0; i < mazeGrid.length; i++) {
+            if (mazeGrid[i][mazeGrid[0].length - 1].equals(" ")) {
+                return new int[]{i, mazeGrid[0].length - 1};
+            }
+        }
+        return null;
     }
 }

@@ -18,51 +18,51 @@ public class MazeRunner {
     boolean facingEast = false;
     boolean facingWest = true;
 
-    public void addToPath(){
+    public void addToPath() {
         
     }
 
-    public void removeFromPath(){
+    public void removeFromPath() {
 
     }
 
-    public void backtrackToFork(){
+    public void backtrackToFork() {
 
     }
 
-    public Stack getPath(){
+    public Stack getPath() {
 
     }
 
-    public int[] getPosition(){
+    public int[] getPosition() {
 
     }
 
-    public void setPosition(){
+    public void setPosition() {
 
     }
 
-    public void moveForward(){
+    public void moveForward() {
 
     }
 
-    public void moveLeft(){
+    public void moveLeft() {
 
     }
 
-    public void moveRight(){
+    public void moveRight() {
 
     }
 
-    public boolean checkDeadEnd(int row, int col){
+    public boolean checkDeadEnd(int row, int col) {
 
     }
 
-    public boolean checkWall(int row, int col){
+    public boolean checkWall(int row, int col) {
 
     }
 
-    public boolean checkFinish(int row, int col){
+    public boolean checkFinish(int row, int col) {
         
     }
 
