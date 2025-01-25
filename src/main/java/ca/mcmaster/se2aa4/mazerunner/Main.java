@@ -29,7 +29,7 @@ public class Main {
                 String inputFile = cmd.getOptionValue("i");
                 logger.info("**** Reading the maze from file " + inputFile);
                 maze = new Maze(inputFile);
-                mazeRunner = new MazeRunner(maze.getMazeArray(), maze.getEntryPoint(), maze.getExitPoint());
+                mazeRunner = new MazeRunner(maze.getMazeGrid(), maze.getEntryPoint(), maze.getExitPoint());
                 
                 if (mazeRunner.MazeAlgorithm()) {
                     logger.info("Maze solved successfully.");
