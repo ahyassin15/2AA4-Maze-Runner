@@ -4,6 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.cli.*;
 
+
+/**
+ * Main class to run the Maze Runner application.
+ * - Parses command-line arguments for the input maze file (-i)
+ * - Initializes the Maze object from the specified file
+ * - Creates a MazeRunner to navigate the loaded maze
+ * - Executes maze-solving algorithm and logs whether the maze was solved
+ */
 public class Main {
 
     private static final Logger logger = LogManager.getLogger();
@@ -15,35 +23,40 @@ public class Main {
 
         logger.info("** Starting Maze Runner");
 
-        Options options = new Options();
-        options.addOption("i", true, "input file");
+        Options cliOptions = new Options();
+        cliOptions.addOption("i", true, "Path to the maze input file");
 
-        CommandLineParser parser = new DefaultParser();
+        CommandLineParser cliParser = new DefaultParser();
+        CommandLine cmdLine;
     
         try {
             
-            CommandLine cmd = parser.parse(options, args);
+            cmdLine = cliParser.parse(cliOptions, args);
             
-            if (cmd.hasOption("i")) {
+            //Check for input file
+            if (cmdLine.hasOption("i")) {
                 
-                String inputFile = cmd.getOptionValue("i");
+                String inputFile = cmdLine.getOptionValue("i");
                 logger.info("**** Reading the maze from file " + inputFile);
+                
+                //Instantiate Maze and MazeRunner
                 maze = new Maze(inputFile);
                 mazeRunner = new MazeRunner(maze.getMazeGrid(), maze.getEntryPoint(), maze.getExitPoint());
                 
-                if (mazeRunner.MazeAlgorithm()) {
+                //Execute the maze solving algorithm
+                if (mazeRunner.mazeAlgorithm()) {
                     logger.info("Maze solved successfully.");
                 } else {
                     logger.info("Failed to solve the maze.");
                 }
             } else {
-                logger.error("Input file not provided. Use -i flag to specify the input file.");
+                logger.error("No input file specified. Use the -i option to provide a maze file.");
             }
             
-        } catch (ParseException e) {
-            logger.error("Failed to parse command line arguments", e);
+        } catch (ParseException parseEx) {
+            logger.error("Error while parsing the command-line arguments", parseEx);
         } catch (Exception e) {
-            logger.error("An error occurred while reading the maze file", e);
+            logger.error("An error occurred while processing the maze", e);
         }
     }
 }

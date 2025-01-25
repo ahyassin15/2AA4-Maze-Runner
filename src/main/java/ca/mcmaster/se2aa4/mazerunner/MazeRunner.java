@@ -4,30 +4,44 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/*
+ * MazeRunner class is responsible for navigating through a 2D grid maze
+ *
+ * Key: canonicalPath string logs the moves taken ('F', 'L', 'R')
+ *
+ * Primary features:
+ * - moveForward, moveLeft, moveRight: Changes the position and orientation
+ * - lookForward, lookLeft, lookRight: Inspects next cell in a given direction
+ * - checkDeadEnd, checkWall: Utility methods to identify walls or dead ends
+ * - mazeAlgorithm: Stops until the exit is reached or tne move limit is exceeded
+ *
+ * Logs the final result (path taken, success/failure)
+ */
 public class MazeRunner {
 
     private static final Logger logger = LogManager.getLogger();
 
     private String canonicalPath = "";
+
+    //Positions and grid
     private int[] currentPosition = new int[2];
     private int[] exitPosition = new int[2];
-
     private String[][] mazeGrid;
 
+    //Direction flags
     private boolean isFacingNorth = false;
     private boolean isFacingSouth = false;
     private boolean isFacingEast = false;
     private boolean isFacingWest = true;
 
-    public MazeRunner(String[][] mazeGrid, int[] entryPoint, int[] exitPosition) {
-        currentPosition = entryPoint;
-        this.exitPosition = exitPosition;
+    public MazeRunner(String[][] mazeGrid, int[] startPoint, int[] exitPoint) {
+        this.currentPosition = startPoint;
+        this.exitPosition = exitPoint;
         this.mazeGrid = mazeGrid;
     }
 
-    public void addToPath(String value) {
-        canonicalPath += value;
+    public void addToPath(String step) {
+        canonicalPath += step;
     }
 
     public void removePath() {
@@ -40,11 +54,11 @@ public class MazeRunner {
         return canonicalPath.split("");
     }
 
-    public int[] getCurrentPosition() {
+    public int[] getPosition() {
         return currentPosition;
     }
 
-    public void setCurrentPosition(int[] newPosition) {
+    public void setPosition(int[] newPosition) {
         currentPosition = newPosition;
     }
 
@@ -100,26 +114,26 @@ public class MazeRunner {
         int col = position[1];
         int walls = 0;
 
-        if (row > 0 && isWall(new int[]{row - 1, col})) {
+        if (row > 0 && checkWall(new int[]{row - 1, col})) {
             walls++;
         }
 
-        if (col > 0 && isWall(new int[]{row, col - 1})) {
+        if (col > 0 && checkWall(new int[]{row, col - 1})) {
             walls++;
         }
 
-        if (row < mazeGrid.length - 1 && isWall(new int[]{row + 1, col})) {
+        if (row < mazeGrid.length - 1 && checkWall(new int[]{row + 1, col})) {
             walls++;
         }
 
-        if (col < mazeGrid[0].length - 1 && isWall(new int[]{row, col + 1})) {
+        if (col < mazeGrid[0].length - 1 && checkWall(new int[]{row, col + 1})) {
             walls++;
         }
 
         return walls > 2;
     }
 
-    public boolean isWall(int[] position) {
+    public boolean checkWall(int[] position) {
         int row = position[0];
         int col = position[1];
 
@@ -130,11 +144,11 @@ public class MazeRunner {
         return false;
     }
     
-    public boolean isFinish(int[] position) {
+    public boolean isExit(int[] position) {
         return Arrays.equals(position, exitPosition);
     }
 
-    public int[] peekForward() {
+    public int[] lookForward() {
 
         if (isFacingNorth) {
             return new int[]{currentPosition[0] - 1, currentPosition[1]};
@@ -152,7 +166,7 @@ public class MazeRunner {
         return currentPosition;
     }
 
-    public int[] peekLeft() {
+    public int[] lookLeft() {
         if (isFacingNorth) {
             return new int[]{currentPosition[0], currentPosition[1] - 1};
         } else if (isFacingSouth) {
@@ -165,7 +179,7 @@ public class MazeRunner {
         return currentPosition;
     }
 
-    public int[] peekRight() {
+    public int[] lookRight() {
         if (isFacingNorth) {
             return new int[]{currentPosition[0], currentPosition[1] + 1};
         } else if (isFacingSouth) {
@@ -178,17 +192,17 @@ public class MazeRunner {
         return currentPosition;
     }
 
-    public boolean MazeAlgorithm() {
+    public boolean mazeAlgorithm() {
         
         int moves = 0;
 
-        while (!isFinish(currentPosition)) {
-            if (!isWall(peekForward())) {
+        while (!isExit(currentPosition)) {
+            if (!checkWall(lookForward())) {
                 moveForward();
-            } else if (!isWall(peekLeft())) {
+            } else if (!checkWall(lookLeft())) {
                 moveLeft();
                 moveForward();
-            } else if (!isWall(peekRight())) {
+            } else if (!checkWall(lookRight())) {
                 moveRight();
                 moveForward();
             } else {
@@ -203,7 +217,7 @@ public class MazeRunner {
             }
         }
 
-        if (isFinish(currentPosition)) {
+        if (isExit(currentPosition)) {
             logger.info("Maze has been solved");
             logger.info("Path: " + canonicalPath);
             return true;
@@ -213,5 +227,4 @@ public class MazeRunner {
             return false;
         }
     }
-
 }
