@@ -1,47 +1,43 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.Stack;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class MazeRunner {
 
-    private Stack<String> factorizedPath = new Stack<>();
-    private Stack<String> canonicalPath = new Stack<>();
-    private Stack<int[]> forkLocations = new Stack<>();
+    private static final Logger logger = LogManager.getLogger();
 
+    private String canonicalPath = "";
     private int[] currentPosition = new int[2];
     private int[] exitPosition = new int[2];
+
+    private String[][] mazeGrid;
 
     private boolean isFacingNorth = false;
     private boolean isFacingSouth = false;
     private boolean isFacingEast = false;
     private boolean isFacingWest = true;
 
-    private Maze mazeMap;
+    public MazeRunner(String[][] mazeGrid, int[] entryPoint, int[] exitPosition) {
+        currentPosition = entryPoint;
+        this.exitPosition = exitPosition;
+        this.mazeGrid = mazeGrid;
+    }
 
-    public void addToPath(String direction) {
-        canonicalPath.push(direction);
+    public void addToPath(String value) {
+        canonicalPath += value;
     }
 
     public void removePath() {
-        canonicalPath.pop();
-    }
-
-    public void backtrackToFork() {
-        while(currentPosition!=forkLocations.peek()){
-            removePath();
+        if (!canonicalPath.isEmpty() && canonicalPath.length() > 0) {
+            canonicalPath = canonicalPath.substring(0, canonicalPath.length() - 1);
         }
-
-        forkLocations.pop();
-        moveLeft();
     }
 
     public String[] getPath() {
-        return canonicalPath.toArray(new String[0]);
+        return canonicalPath.split("");
     }
 
     public int[] getCurrentPosition() {
@@ -50,15 +46,6 @@ public class MazeRunner {
 
     public void setCurrentPosition(int[] newPosition) {
         currentPosition = newPosition;
-    }
-
-    public String[] getFactorizedPath(){
-
-        factorizedPath.clear();
-        for (String direction : canonicalPath) {
-            factorizedPath.push(direction);
-        }
-        return factorizedPath.toArray(new String[0]);
     }
 
     public void moveForward() {
@@ -108,80 +95,121 @@ public class MazeRunner {
         addToPath("R");
     }
 
-    public boolean checkDeadEnd(String[][] mazeArray, int row, int col) {
+    public boolean checkDeadEnd(int[] position) {
+        int row = position[0];
+        int col = position[1];
         int walls = 0;
-        if(row>0){
-            if(!isWall(mazeArray,row-1,col)){
-                walls++;
-            }
+
+        if (row > 0 && isWall(new int[]{row - 1, col})) {
+            walls++;
         }
-        if(col>0){
-            if(!isWall(mazeArray,row,col-1)){
-                walls++;
-            }
+
+        if (col > 0 && isWall(new int[]{row, col - 1})) {
+            walls++;
         }
-        if(row<mazeArray.length-1){
-            if(!isWall(mazeArray,row+1,col)){
-                walls++;
-            }
+
+        if (row < mazeGrid.length - 1 && isWall(new int[]{row + 1, col})) {
+            walls++;
         }
-        if(col<mazeArray[0].length-1){
-            if(!isWall(mazeArray,row,col+1)){
-                walls++;
-            }
+
+        if (col < mazeGrid[0].length - 1 && isWall(new int[]{row, col + 1})) {
+            walls++;
         }
-        if(walls>2){
-            return true;
-        }
-        else{
-            return false;
-        }
+
+        return walls > 2;
     }
 
-    public boolean isWall(String[][] mazeArray, int row, int col) {
-        if (mazeArray[row][col].equals("#")){
+    public boolean isWall(int[] position) {
+        int row = position[0];
+        int col = position[1];
+
+        if (mazeGrid[row][col].equals("#")) {
             return true;
         }
-        else {
-            return false;
-        }
+
+        return false;
+    }
+    
+    public boolean isFinish(int[] position) {
+        return Arrays.equals(position, exitPosition);
     }
 
-    public boolean isFinishPoint(String[][] mazeArray, int row, int col) {
-        if(currentPosition == exitPosition){
-            return true;
+    public int[] peekForward() {
+
+        if (isFacingNorth) {
+            return new int[]{currentPosition[0] - 1, currentPosition[1]};
+        
+        } else if (isFacingSouth) {
+            return new int[]{currentPosition[0] + 1, currentPosition[1]};
+        
+        } else if (isFacingEast) {
+            return new int[]{currentPosition[0], currentPosition[1] + 1};
+        
+        } else if (isFacingWest) {
+            return new int[]{currentPosition[0], currentPosition[1] - 1};
+
         }
-        else{
-            return false;
-        }
+        return currentPosition;
     }
 
-    public boolean isFork(String[][] mazeArray, int row, int col) {
-        int openPaths = 0;
-        if(row>0){
-            if(!isWall(mazeArray,row-1,col)){
-                openPaths++;
+    public int[] peekLeft() {
+        if (isFacingNorth) {
+            return new int[]{currentPosition[0], currentPosition[1] - 1};
+        } else if (isFacingSouth) {
+            return new int[]{currentPosition[0], currentPosition[1] + 1};
+        } else if (isFacingEast) {
+            return new int[]{currentPosition[0] + 1, currentPosition[1]};
+        } else if (isFacingWest) {
+            return new int[]{currentPosition[0] - 1, currentPosition[1]};
+        }
+        return currentPosition;
+    }
+
+    public int[] peekRight() {
+        if (isFacingNorth) {
+            return new int[]{currentPosition[0], currentPosition[1] + 1};
+        } else if (isFacingSouth) {
+            return new int[]{currentPosition[0], currentPosition[1] - 1};
+        } else if (isFacingEast) {
+            return new int[]{currentPosition[0] - 1, currentPosition[1]};
+        } else if (isFacingWest) {
+            return new int[]{currentPosition[0] + 1, currentPosition[1]};
+        }
+        return currentPosition;
+    }
+
+    public boolean MazeAlgorithm() {
+        
+        int moves = 0;
+
+        while (!isFinish(currentPosition)) {
+            if (!isWall(peekForward())) {
+                moveForward();
+            } else if (!isWall(peekLeft())) {
+                moveLeft();
+                moveForward();
+            } else if (!isWall(peekRight())) {
+                moveRight();
+                moveForward();
+            } else {
+                moveRight();
+                moveRight();
+            }
+
+            moves++;
+
+            if (moves > 1000) {
+                break;
             }
         }
-        if(col>0){
-            if(!isWall(mazeArray,row,col-1)){
-                openPaths++;
-            }
-        }
-        if(row<mazeArray.length-1){
-            if(!isWall(mazeArray,row+1,col)){
-                openPaths++;
-            }
-        }
-        if(col<mazeArray[0].length-1){
-            if(!isWall(mazeArray,row,col+1)){
-                openPaths++;
-            }
-        }
-        if(openPaths>2){
+
+        if (isFinish(currentPosition)) {
+            logger.info("Maze has been solved");
+            logger.info("Path: " + canonicalPath);
             return true;
-        }
-        else{
+
+        } else {
+            logger.info("Maze has not been solved");
             return false;
         }
     }
