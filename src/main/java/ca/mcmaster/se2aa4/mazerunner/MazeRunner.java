@@ -4,19 +4,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/*
- * MazeRunner class is responsible for navigating through a 2D grid maze
- *
- * Key: canonicalPath string logs the moves taken ('F', 'L', 'R')
- *
- * Primary features:
- * - moveForward, moveLeft, moveRight: Changes the position and orientation
- * - lookForward, lookLeft, lookRight: Inspects next cell in a given direction
- * - checkDeadEnd, checkWall: Utility methods to identify walls or dead ends
- * - mazeAlgorithm: Stops until the exit is reached or tne move limit is exceeded
- *
- * Logs the final result (path taken, success/failure)
- */
+
 public class MazeRunner {
 
     private static final Logger logger = LogManager.getLogger();

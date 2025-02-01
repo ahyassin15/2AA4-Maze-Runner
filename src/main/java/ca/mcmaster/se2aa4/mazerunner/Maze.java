@@ -6,18 +6,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Maze class that reads a maze layout from a file and stores it in a 2D string array
- * '#' characters represent walls, and ' ' represent open paths
- * 
- * This class provides methods to:
- * - Parse the maze from an input file
- * - Retrieve or modify the stored maze grid
- * - Display maze grid in the logs
- * - Find the entry and exit points based on open spaces in the first and last columns
- * 
- * If any file-reading errors occur, they are logged accordingly
- */
+
 public class Maze {
     
     private static final Logger logger = LogManager.getLogger();

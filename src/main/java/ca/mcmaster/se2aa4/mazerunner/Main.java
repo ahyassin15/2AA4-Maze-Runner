@@ -4,14 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.commons.cli.*;
 
-
-/**
- * Main class to run the Maze Runner application.
- * - Parses command-line arguments for the input maze file (-i)
- * - Initializes the Maze object from the specified file
- * - Creates a MazeRunner to navigate the loaded maze
- * - Executes maze-solving algorithm and logs whether the maze was solved
- */
 public class Main {
 
     private static final Logger logger = LogManager.getLogger();
@@ -22,19 +14,28 @@ public class Main {
     public static void main(String[] args) {
 
         logger.info("** Starting Maze Runner");
-
-        Options cliOptions = new Options();
-        cliOptions.addOption("i", true, "Path to the maze input file");
-
-        CommandLineProcessor cliParser = new DefaultParser();
-        CommandLine cmdLine;
     
         try {
             
-            cmdLine = cliParser.parse(cliOptions, args);
+            CommandLineProcessor cliProcessor = new CommandLineProcessor();
+            CommandLine cmdLine = cliProcessor.process(args);
+
+            if (!cmdLine.hasOption("i")) {
+                logger.error("Missing required option: i");
+                System.exit(1);
+            }
             
-            //Check for input file
-            if (cmdLine.hasOption("i")) {
+            // Get the file path
+            String filePath = cmdLine.getOptionValue("i");
+
+            // Perform the maze walker if -p is provided
+            if (cmdLine.hasOption("p")) {
+                
+                // Get the path
+                String path = cmdLine.getOptionValue("p");
+                
+
+            } else {
                 
                 String inputFile = cmdLine.getOptionValue("i");
                 logger.info("**** Reading the maze from file " + inputFile);
@@ -49,8 +50,6 @@ public class Main {
                 } else {
                     logger.info("Failed to solve the maze.");
                 }
-            } else {
-                logger.error("No input file specified. Use the -i option to provide a maze file.");
             }
             
         } catch (ParseException parseEx) {
