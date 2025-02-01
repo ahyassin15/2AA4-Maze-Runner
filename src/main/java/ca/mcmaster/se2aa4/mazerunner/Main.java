@@ -26,7 +26,7 @@ public class Main {
         Options cliOptions = new Options();
         cliOptions.addOption("i", true, "Path to the maze input file");
 
-        CommandLineParser cliParser = new DefaultParser();
+        CommandLineProcessor cliParser = new DefaultParser();
         CommandLine cmdLine;
     
         try {
