@@ -3,42 +3,44 @@ package ca.mcmaster.se2aa4.mazerunner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MazeImporter {
 
-    // Reads the maze file and stores it in the mazeGrid as CellType values
-    public Cell[][] scanMaze(String inputFile) {
+    private static final Logger logger = LogManager.getLogger();
+
+    //Reads a maze file and converts it into a Maze object
+    public static Maze scanMaze(String inputFile) throws IOException{
+
+        logger.trace("Initializing maze scan...");
+        logger.info("Reading maze file: " + inputFile);
         
-        try (BufferedReader initialReader = new BufferedReader(new FileReader(inputFile))) {
-            String currentLine;
-            int totalRows = 0;
+        //Store maze lines in a list
+        List<char[]> mazeLines = new ArrayList<>();
 
-            // Count number of rows in the file
-            while ((currentLine = initialReader.readLine()) != null) {
-                totalRows++;
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            
+            String line;
+            while ((line = reader.readLine()) != null) {
+                mazeLines.add(line.toCharArray()); //Convert each line into a char array
             }
-
-            initialReader.close();
-
-            // Initialize mazeGrid with CellType
-            mazeGrid = new Cell[totalRows][];
-            BufferedReader secondReader = new BufferedReader(new FileReader(inputFile));
-            int currentRow = 0;
-
-            // Read the file again to populate the maze grid
-            while ((currentLine = secondReader.readLine()) != null) {
-                mazeGrid[currentRow] = new Cell[currentLine.length()];
-
-                for (int index = 0; index < currentLine.length(); index++) {
-                    mazeGrid[currentRow][index] = (currentLine.charAt(index) == '#') ? Cell.WALL : Cell.PASSAGE;
-                }
-                currentRow++;
-            }
-            secondReader.close();
 
         } catch (IOException e) {
-            logger.error("An error occurred while reading the maze file", e);
+            logger.error("An error occurred while reading the maze file: " + inputFile, e);
+            throw e;
         }
-        return mazeGrid;
+        
+        //Convert list to a 2D char array
+        char[][] mazeGrid = mazeLines.toArray(new char[0][]);
+
+        //Create Maze object
+        Maze maze = new Maze(mazeGrid);
+        logger.trace("Maze scan completed successfully");
+
+        return maze;
     }
 }
