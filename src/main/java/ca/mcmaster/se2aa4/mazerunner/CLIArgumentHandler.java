@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.commons.cli.*;
 
 
-public class CommandLineProcessor {
+public class CLIArgumentHandler {
 
     //Logger instance
     private static final Logger logger = LogManager.getLogger();

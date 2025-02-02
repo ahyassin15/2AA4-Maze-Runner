@@ -1,90 +1,78 @@
 package ca.mcmaster.se2aa4.mazerunner;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+ 
 
 public class Maze {
-    
-    private static final Logger logger = LogManager.getLogger();
-    String[][] mazeGrid;
 
-    public Maze(String inputFile) {
-        scanMaze(inputFile);
-    }
+    //2D array storing maze cells
+    private Cell[][] mazeGrid;
 
-    public String[][] scanMaze(String inputFile) {
+    //Constructor that initializes the maze from a character array
+    public Maze(char[][] maze) {
         
-        try (BufferedReader initialReader = new BufferedReader(new FileReader(inputFile))) {
-            String currentLine;
-            int totalRows = 0;
-            
-            while ((currentLine = initialReader.readLine()) != null) {
-                totalRows++;
-            }
+        this.mazeGrid = new Cell[maze.length][maze[0].length];
 
-            initialReader.close();
-
-            mazeGrid = new String[totalRows][];
-            BufferedReader secondReader = new BufferedReader(new FileReader(inputFile));
-            int currentRow = 0;
-
-            while ((currentLine = secondReader.readLine()) != null) {
-                
-                mazeGrid[currentRow] = new String[currentLine.length()];
-                
-                for (int index = 0; index < currentLine.length(); index++) {
-                    if (currentLine.charAt(index) == '#') {
-                        mazeGrid[currentRow][index] = "#";
-                    } else if (currentLine.charAt(index) == ' ') {
-                        mazeGrid[currentRow][index] = " ";
-                    }
+        //Iterate through each row and col, assigning the correct type of cell (wall or passage)
+        for (int row = 0; row < maze.length; row++) {
+            for (int col = 0; col < maze[row].length; col++) {
+                //If the character is '#', it represents a wall
+                if (maze[row][col] == '#') {
+                    this.mazeGrid[row][col] = Cell.WALL;
+                } 
+                //If the character is ' ', it represents a passage
+                else if (maze[row][col] == ' ') {
+                    this.mazeGrid[row][col] = Cell.PASSAGE;
                 }
-                currentRow++;
             }
-            secondReader.close();
-            
-        } catch (IOException e) {
-            logger.error("An error occurred while reading the maze file", e);
+
+            //Fill any remaining space in the row with PASSAGE cells
+            for (int col = maze[row].length; col < this.mazeGrid[0].length; col++) {
+                this.mazeGrid[row][col] = Cell.PASSAGE;
+            }
         }
-        return mazeGrid;
     }
 
-    public String[][] getMazeGrid() {
-        return mazeGrid;
+    //Gets the cell type at a given position
+    public Cell getCell(Position position) {
+        return mazeGrid[position.getY()][position.getX()];
     }
 
-    public void setMazeGrid(String[][] mazeGrid) {
-        this.mazeGrid = mazeGrid;
+    //Constructor that initializes the maze array from an existing grid of walls and passages
+    public Maze(Cell[][] maze) {
+        this.mazeGrid = maze;
     }
 
+    //Checks if a given position contains a wall
+    public boolean checkWall(Position position) {
+        return getCell(position) == Cell.WALL;
+    }
+
+    //Prints the maze to the console
     public void displayMaze() {
         for (int row = 0; row < mazeGrid.length; row++) {
             for (int col = 0; col < mazeGrid[row].length; col++) {
-                logger.info(mazeGrid[row][col]);
+                if (mazeGrid[row][col] == Cell.WALL) {
+                    System.out.print("WALL ");
+                } else {
+                    System.out.print("PASS ");
+                }
             }
-            logger.info(System.lineSeparator());
+            System.out.println(); //Move to the next line for the next row
         }
     }
 
-    public int[] getEntryPoint() {
-        for (int i = 0; i < mazeGrid.length; i++) {
-            if (mazeGrid[i][0].equals(" ")) {
-                return new int[]{i, 0};
+    //Finds the entry point (first column with a passage)
+    public Position getEntryPoint() {
+        for (int col = 0; col < mazeGrid.length; col++) {
+            if (!checkWall(new Position(0, col))) {
+                return new Position(0, col);
             }
         }
-        return null;
+        return null; //Return null if no entry point found
     }
 
-    public int[] getExitPoint() {
-        for (int i = 0; i < mazeGrid.length; i++) {
-            if (mazeGrid[i][mazeGrid[i].length - 1].equals(" ")) {
-                return new int[]{i, mazeGrid[i].length - 1};
-            }
-        }
-        return null;
+    //Finds the exit point from position (last column and not a wall)
+    public boolean getExitPoint(Position position) {
+        return (position.getX() == mazeGrid[0].length - 1) && !checkWall(position); 
     }
+
 }

@@ -17,7 +17,7 @@ public class Main {
     
         try {
             
-            CommandLineProcessor cliProcessor = new CommandLineProcessor();
+            CLIArgumentHandler cliProcessor = new CLIArgumentHandler();
             CommandLine cmdLine = cliProcessor.process(args);
 
             if (!cmdLine.hasOption("i")) {
@@ -42,7 +42,7 @@ public class Main {
                 
                 //Instantiate Maze and MazeRunner
                 maze = new Maze(inputFile);
-                mazeRunner = new MazeRunner(maze.getMazeGrid(), maze.getEntryPoint(), maze.getExitPoint());
+                //mazeRunner = new MazeRunner(maze.getMazeGrid(), maze.getEntryPoint(), maze.getExitPoint());
                 
                 //Execute the maze solving algorithm
                 if (mazeRunner.mazeAlgorithm()) {
