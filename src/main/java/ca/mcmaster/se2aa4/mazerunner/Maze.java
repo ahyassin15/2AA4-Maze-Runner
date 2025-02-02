@@ -71,7 +71,7 @@ public class Maze {
     }
 
     //Finds the exit point from position (last column and not a wall)
-    public boolean getExitPoint(Position position) {
+    public boolean checkExitPoint(Position position) {
         return (position.getX() == mazeGrid[0].length - 1) && !checkWall(position); 
     }
 

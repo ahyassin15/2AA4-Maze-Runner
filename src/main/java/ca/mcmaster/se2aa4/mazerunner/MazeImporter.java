@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 public class MazeImporter {
 
     private static final Logger logger = LogManager.getLogger();
-
+    
     //Reads a maze file and converts it into a Maze object
     public static Maze scanMaze(String inputFile) throws IOException{
 

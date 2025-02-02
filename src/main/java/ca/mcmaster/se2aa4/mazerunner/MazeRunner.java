@@ -1,218 +1,107 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class MazeRunner {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();    // Logger instance
+    private Maze maze;                                              // Maze object (current maze)
+    private Position position;                                      // Current position in the maze
+    private Direction direction;                                    // Current facing direction
 
-    private String canonicalPath = "";
-
-    //Positions and grid
-    private int[] currentPosition = new int[2];
-    private int[] exitPosition = new int[2];
-    private String[][] mazeGrid;
-
-    //Direction flags
-    private boolean isFacingNorth = false;
-    private boolean isFacingSouth = false;
-    private boolean isFacingEast = false;
-    private boolean isFacingWest = true;
-
-    public MazeRunner(String[][] mazeGrid, int[] startPoint, int[] exitPoint) {
-        this.currentPosition = startPoint;
-        this.exitPosition = exitPoint;
-        this.mazeGrid = mazeGrid;
+    // Constructor initializes MazeRunner at the maze's entry point, facing right by default
+    public MazeRunner(Maze maze) {
+        this.maze = maze;
+        this.position = maze.getEntryPoint();
+        this.direction = Direction.RIGHT;
     }
 
-    public void addToPath(String step) {
-        canonicalPath += step;
-    }
-
-    public void removePath() {
-        if (!canonicalPath.isEmpty() && canonicalPath.length() > 0) {
-            canonicalPath = canonicalPath.substring(0, canonicalPath.length() - 1);
-        }
-    }
-
-    public String[] getPath() {
-        return canonicalPath.split("");
-    }
-
-    public int[] getPosition() {
-        return currentPosition;
-    }
-
-    public void setPosition(int[] newPosition) {
-        currentPosition = newPosition;
-    }
-
-    public void moveForward() {
-        if (isFacingNorth) {
-            currentPosition[0]--;
-        } else if (isFacingSouth) {
-            currentPosition[0]++;
-        } else if (isFacingEast) {
-            currentPosition[1]++;
-        } else if (isFacingWest) {
-            currentPosition[1]--;
-        }
-        addToPath("F");
-    }
-
-    public void moveLeft() {
-        if (isFacingNorth) {
-            isFacingWest = true;
-            isFacingNorth = false;
-        } else if (isFacingSouth) {
-            isFacingEast = true;
-            isFacingSouth = false;
-        } else if (isFacingEast) {
-            isFacingNorth = true;
-            isFacingEast = false;
-        } else if (isFacingWest) {
-            isFacingSouth = true;
-            isFacingWest = false;
-        }
-        addToPath("L");
-    }
-
-    public void moveRight() {
-        if (isFacingNorth) {
-            isFacingEast = true;
-            isFacingNorth = false;
-        } else if (isFacingSouth) {
-            isFacingWest = true;
-            isFacingSouth = false;
-        } else if (isFacingEast) {
-            isFacingSouth = true;
-            isFacingEast = false;
-        } else if (isFacingWest) {
-            isFacingNorth = true;
-            isFacingWest = false;
-        }
-        addToPath("R");
-    }
-
-    public boolean checkDeadEnd(int[] position) {
-        int row = position[0];
-        int col = position[1];
-        int walls = 0;
-
-        if (row > 0 && checkWall(new int[]{row - 1, col})) {
-            walls++;
-        }
-
-        if (col > 0 && checkWall(new int[]{row, col - 1})) {
-            walls++;
-        }
-
-        if (row < mazeGrid.length - 1 && checkWall(new int[]{row + 1, col})) {
-            walls++;
-        }
-
-        if (col < mazeGrid[0].length - 1 && checkWall(new int[]{row, col + 1})) {
-            walls++;
-        }
-
-        return walls > 2;
-    }
-
-    public boolean checkWall(int[] position) {
-        int row = position[0];
-        int col = position[1];
-
-        if (mazeGrid[row][col].equals("#")) {
-            return true;
-        }
-
-        return false;
-    }
-    
-    public boolean isExit(int[] position) {
-        return Arrays.equals(position, exitPosition);
-    }
-
-    public int[] lookForward() {
-
-        if (isFacingNorth) {
-            return new int[]{currentPosition[0] - 1, currentPosition[1]};
+    // Verifies whether the provided path successfully reaches the maze exit
+    public boolean verifyPath(String path) {
         
-        } else if (isFacingSouth) {
-            return new int[]{currentPosition[0] + 1, currentPosition[1]};
-        
-        } else if (isFacingEast) {
-            return new int[]{currentPosition[0], currentPosition[1] + 1};
-        
-        } else if (isFacingWest) {
-            return new int[]{currentPosition[0], currentPosition[1] - 1};
+        logger.trace("Starting path verification...");
 
+        // Convert path into its expanded (canonical) format
+        path = toCanonicalPath(path);
+
+        // Process each movement in the path
+        for (char step : path.toCharArray()) {
+            switch (step) {
+                case 'L' -> direction = direction.moveLeft();     // Turn left
+                case 'R' -> direction = direction.moveRight();    // Turn right
+                case 'F' -> {                                           
+                    // Move forward in the current direction
+                    Position nextPosition = position.move(direction);
+                    
+                    // If the new position is the exit, return true
+                    if (maze.checkExitPoint(nextPosition)) {
+                        return true;
+                    }
+
+                    position = nextPosition; // Update position
+                }
+            }
         }
-        return currentPosition;
+
+        logger.trace("Path verification complete.");
+        return maze.checkExitPoint(position); // Check if the final position is at the exit
     }
 
-    public int[] lookLeft() {
-        if (isFacingNorth) {
-            return new int[]{currentPosition[0], currentPosition[1] - 1};
-        } else if (isFacingSouth) {
-            return new int[]{currentPosition[0], currentPosition[1] + 1};
-        } else if (isFacingEast) {
-            return new int[]{currentPosition[0] + 1, currentPosition[1]};
-        } else if (isFacingWest) {
-            return new int[]{currentPosition[0] - 1, currentPosition[1]};
-        }
-        return currentPosition;
-    }
+    // Converts compacted path into expanded form (e.g. "3F2L" into "FFFLL")
+    public static String toCanonicalPath(String path) {
+        logger.trace("Expanding path to canonical format...");
 
-    public int[] lookRight() {
-        if (isFacingNorth) {
-            return new int[]{currentPosition[0], currentPosition[1] + 1};
-        } else if (isFacingSouth) {
-            return new int[]{currentPosition[0], currentPosition[1] - 1};
-        } else if (isFacingEast) {
-            return new int[]{currentPosition[0] - 1, currentPosition[1]};
-        } else if (isFacingWest) {
-            return new int[]{currentPosition[0] + 1, currentPosition[1]};
-        }
-        return currentPosition;
-    }
+        StringBuilder expandedPath = new StringBuilder();
+        int repeatCount = -1; // Stores number of times a movement should be repeated
 
-    public boolean mazeAlgorithm() {
-        
-        int moves = 0;
-
-        while (!isExit(currentPosition)) {
-            if (!checkWall(lookForward())) {
-                moveForward();
-            } else if (!checkWall(lookLeft())) {
-                moveLeft();
-                moveForward();
-            } else if (!checkWall(lookRight())) {
-                moveRight();
-                moveForward();
+        for (char current : path.toCharArray()) {
+            if (Character.isDigit(current)) {
+                repeatCount = Character.getNumericValue(current); // Store the numeric value
             } else {
-                moveRight();
-                moveRight();
-            }
-
-            moves++;
-
-            if (moves > 1000) {
-                break;
+                if (repeatCount > 0) {
+                    expandedPath.append(String.valueOf(current).repeat(repeatCount)); // Repeat the movement
+                    repeatCount = -1; // Reset repeat count
+                } else {
+                    expandedPath.append(current); // Append the movement as-is
+                }
             }
         }
 
-        if (isExit(currentPosition)) {
-            logger.info("Maze has been solved");
-            logger.info("Path: " + canonicalPath);
-            return true;
+        String canonicalPath = expandedPath.toString();
+        logger.trace("Canonical path: " + canonicalPath);
+        return canonicalPath;
+    }
 
-        } else {
-            logger.info("Maze has not been solved");
-            return false;
+    // Converts expanded path into compacted form (e.g. "FFFLL" into "3F2L")
+    public static String toFactoredPath(String path) {
+        logger.trace("Compacting path representation...");
+
+        if (path.isEmpty()) return ""; // Return empty string if input is empty
+
+        StringBuilder compactPath = new StringBuilder();
+        char currentChar = path.charAt(0); // First movement character
+        int count = 1; // Count occurrences of the current movement
+
+        // Iterate through the path string
+        for (int i = 1; i < path.length(); i++) {
+            if (path.charAt(i) == currentChar) {
+                count++; // Increase count if it's the same movement
+            } else {
+                if (count > 1) compactPath.append(count); // Append count if greater than 1
+                compactPath.append(currentChar); // Append movement character
+                currentChar = path.charAt(i); // Update current movement
+                count = 1; // Reset count
+            }
         }
+
+        // Append the last character sequence
+        if (count > 1) compactPath.append(count);
+        compactPath.append(currentChar);
+
+        String factoredPath = compactPath.toString();
+        logger.trace("Factored path: " + factoredPath);
+
+        return factoredPath;
     }
 }
