@@ -6,56 +6,58 @@ import org.apache.commons.cli.*;
 
 public class Main {
 
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(); // Logger instance
 
-    private static Maze maze;
-    private static MazeRunner mazeRunner;
-    
     public static void main(String[] args) {
+        
+        logger.trace("Starting Maze Runner");
 
-        logger.info("** Starting Maze Runner");
-    
         try {
             
-            CLIArgumentHandler cliProcessor = new CLIArgumentHandler();
-            CommandLine cmdLine = cliProcessor.process(args);
+            // Process command-line arguments
+            CLIArgumentHandler processor = new CLIArgumentHandler();
+            CommandLine cmdLine = processor.process(args);
 
+            // Ensure required input file (-i) is provided
             if (!cmdLine.hasOption("i")) {
-                logger.error("Missing required option: i");
+                logger.error("Error: No input file provided. Use -i to specify the maze file.");
                 System.exit(1);
             }
-            
-            // Get the file path
+
+            // Retrieve the maze file path from arguments
             String filePath = cmdLine.getOptionValue("i");
 
-            // Perform the maze walker if -p is provided
+            // Load and display the maze
+            Maze maze = MazeImporter.scanMaze(filePath);
+            maze.displayMaze();
+
+            logger.info("Processing the given path");
+
+            // If a path is provided with -p, verify it
             if (cmdLine.hasOption("p")) {
                 
-                // Get the path
-                String path = cmdLine.getOptionValue("p");
-                
+                String providedPath = cmdLine.getOptionValue("p");
+
+                MazeRunner mazeRunner = new MazeRunner();
+
+                if (mazeRunner.verifyPath(maze, providedPath)) {
+                    System.out.println("Path is valid");
+                } else {
+                    System.out.println("Path is invalid");
+                }
 
             } else {
-                
-                String inputFile = cmdLine.getOptionValue("i");
-                logger.info("**** Reading the maze from file " + inputFile);
-                
-                //Instantiate Maze and MazeRunner
-                maze = new Maze(inputFile);
-                //mazeRunner = new MazeRunner(maze.getMazeGrid(), maze.getEntryPoint(), maze.getExitPoint());
-                
-                //Execute the maze solving algorithm
-                if (mazeRunner.mazeAlgorithm()) {
-                    logger.info("Maze solved successfully.");
-                } else {
-                    logger.info("Failed to solve the maze.");
-                }
+                // If no path is given, solve the maze using the right-hand rule
+                MazeSolver solver = new RightHandSolver();
+                String pathSolution = solver.solveMaze(maze);
+                System.out.println(pathSolution);
             }
-            
-        } catch (ParseException parseEx) {
-            logger.error("Error while parsing the command-line arguments", parseEx);
+
+            logger.trace("End of Maze Runner");
+
         } catch (Exception e) {
-            logger.error("An error occurred while processing the maze", e);
+            logger.error("Unexpected error occurred", e);
+            e.printStackTrace();
         }
     }
 }

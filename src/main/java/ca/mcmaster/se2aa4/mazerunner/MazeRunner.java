@@ -11,14 +11,14 @@ public class MazeRunner {
     private Direction direction;                                    // Current facing direction
 
     // Constructor initializes MazeRunner at the maze's entry point, facing right by default
-    public MazeRunner(Maze maze) {
+    public MazeRunner() {
         this.maze = maze;
         this.position = maze.getEntryPoint();
         this.direction = Direction.RIGHT;
     }
 
     // Verifies whether the provided path successfully reaches the maze exit
-    public boolean verifyPath(String path) {
+    public boolean verifyPath(Maze maze, String path) {
         
         logger.trace("Starting path verification...");
 

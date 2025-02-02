@@ -11,7 +11,6 @@ public class RightHandSolver implements MazeSolver {
     public String solveMaze(Maze maze) {
 
         logger.trace("Starting maze solution using the right-hand rule...");
-
         
         StringBuilder path = new StringBuilder();   //StringBuilder to store the movement path
         Direction direction = Direction.RIGHT;      //Initial direction
@@ -54,7 +53,6 @@ public class RightHandSolver implements MazeSolver {
 
                 }
             }
-
             // Move forward in the chosen direction
             path.append("F");
             position = position.move(direction);
