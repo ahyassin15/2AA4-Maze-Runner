@@ -21,7 +21,7 @@ public enum Direction {
                 return UP;
             }
         }
-        throw new IllegalStateException("Unexpected value: " + this);
+        throw new IllegalStateException("Unexpected direction: " + this);
     }
 
     //Method to determine new direction when turning right
@@ -40,6 +40,26 @@ public enum Direction {
                 return DOWN;
             }
         }
-        throw new IllegalStateException("Unexpected value: " + this);
+        throw new IllegalStateException("Unexpected direction: " + this);
     }
+
+    //Method to determine new direction when going in the opposite direction
+    public Direction moveOpp() {
+        switch (this) {
+            case UP: {
+                return DOWN;
+            }
+            case DOWN: {
+                return UP;
+            }
+            case LEFT: {
+                return RIGHT;
+            }
+            case RIGHT: {
+                return LEFT;
+            }
+        }
+        throw new IllegalStateException("Unexpected direction: " + this);
+    }
+
 }
