@@ -1,56 +1,55 @@
 package ca.mcmaster.se2aa4.mazerunner;
  
-
 public class Maze {
 
     //2D array storing maze cells
-    private Cell[][] mazeGrid;
+    private MazeCell[][] mazeGrid;
 
     //Constructor that initializes the maze from a character array
     public Maze(char[][] maze) {
         
-        this.mazeGrid = new Cell[maze.length][maze[0].length];
+        this.mazeGrid = new MazeCell[maze.length][maze[0].length];
 
         //Iterate through each row and col, assigning the correct type of cell (wall or passage)
         for (int row = 0; row < maze.length; row++) {
             for (int col = 0; col < maze[row].length; col++) {
                 //If the character is '#', it represents a wall
                 if (maze[row][col] == '#') {
-                    this.mazeGrid[row][col] = Cell.WALL;
+                    this.mazeGrid[row][col] = MazeCell.WALL;
                 } 
                 //If the character is ' ', it represents a passage
                 else if (maze[row][col] == ' ') {
-                    this.mazeGrid[row][col] = Cell.PASSAGE;
+                    this.mazeGrid[row][col] = MazeCell.PASSAGE;
                 }
             }
 
             //Fill any remaining space in the row with PASSAGE cells
             for (int col = maze[row].length; col < this.mazeGrid[0].length; col++) {
-                this.mazeGrid[row][col] = Cell.PASSAGE;
+                this.mazeGrid[row][col] = MazeCell.PASSAGE;
             }
         }
     }
 
     //Gets the cell type at a given position
-    public Cell getCell(Position position) {
+    public MazeCell getCell(Position position) {
         return mazeGrid[position.getY()][position.getX()];
     }
 
     //Constructor that initializes the maze array from an existing grid of walls and passages
-    public Maze(Cell[][] maze) {
+    public Maze(MazeCell[][] maze) {
         this.mazeGrid = maze;
     }
 
     //Checks if a given position contains a wall
     public boolean checkWall(Position position) {
-        return getCell(position) == Cell.WALL;
+        return getCell(position) == MazeCell.WALL;
     }
 
     //Prints the maze to the console
     public void displayMaze() {
         for (int row = 0; row < mazeGrid.length; row++) {
             for (int col = 0; col < mazeGrid[row].length; col++) {
-                if (mazeGrid[row][col] == Cell.WALL) {
+                if (mazeGrid[row][col] == MazeCell.WALL) {
                     System.out.print("WALL ");
                 } else {
                     System.out.print("PASS ");
