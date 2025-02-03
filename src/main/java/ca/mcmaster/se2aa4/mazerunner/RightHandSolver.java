@@ -25,9 +25,9 @@ public class RightHandSolver implements MazeSolver {
             Position forwardMove = position.move(direction);
 
             // Check if walls exist in different directions
-            boolean hasLeftWall = maze.checkWall(leftTurn);
-            boolean hasRightWall = maze.checkWall(rightTurn);
-            boolean hasFrontWall = maze.checkWall(forwardMove);
+            boolean hasLeftWall = maze.getCell(leftTurn).checkWall();
+            boolean hasRightWall = maze.getCell(rightTurn).checkWall();
+            boolean hasFrontWall = maze.getCell(forwardMove).checkWall();
 
             // Right-hand rule decision making
             if (!hasRightWall) {
