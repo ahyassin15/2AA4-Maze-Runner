@@ -10,7 +10,7 @@ public class RightHandSolver implements MazeSolver {
     @Override
     public String solveMaze(Maze maze) {
 
-        logger.trace("Starting maze solution using the right-hand rule...");
+        //logger.trace("Starting maze solution using the right-hand rule...");
         
         StringBuilder path = new StringBuilder();   //StringBuilder to store the movement path
         Direction direction = Direction.RIGHT;      //Initial direction
@@ -58,7 +58,7 @@ public class RightHandSolver implements MazeSolver {
             position = position.move(direction);
         }
 
-        logger.trace("Maze solved successfully.");
+        //logger.trace("Maze solved successfully.");
 
         // Convert path to a factored format before returning
         return MazeRunner.toFactoredPath(path.toString());

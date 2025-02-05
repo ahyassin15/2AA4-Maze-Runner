@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         
-        logger.trace("Starting Maze Runner");
+        //logger.trace("Starting Maze Runner");
 
         try {
             
@@ -29,16 +29,16 @@ public class Main {
 
             // Load and display the maze
             Maze maze = MazeImporter.scanMaze(filePath);
-            maze.displayMaze();
+            // maze.displayMaze();
 
-            logger.info("Processing the given path");
+            //logger.info("Processing the given path");
 
             // If a path is provided with -p, verify it
             if (cmdLine.hasOption("p")) {
                 
                 String providedPath = cmdLine.getOptionValue("p");
 
-                MazeRunner mazeRunner = new MazeRunner();
+                MazeRunner mazeRunner = new MazeRunner(maze);
 
                 if (mazeRunner.verifyPath(maze, providedPath)) {
                     System.out.println("Path is valid");
@@ -53,10 +53,10 @@ public class Main {
                 System.out.println(pathSolution);
             }
 
-            logger.trace("End of Maze Runner");
+            //logger.trace("End of Maze Runner");
 
         } catch (Exception e) {
-            logger.error("Unexpected error occurred", e);
+            //logger.error("Unexpected error occurred", e);
             e.printStackTrace();
         }
     }

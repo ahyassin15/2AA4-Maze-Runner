@@ -13,7 +13,7 @@ public class CLIArgumentHandler {
     public CommandLine process(String[] args) throws Exception {
 
         //Log command-line parsing is starting
-        logger.trace("Starting command-line argument processing...");
+        //logger.trace("Starting command-line argument processing...");
         
         //Create command line parser instance
         CommandLineParser cliParser = new DefaultParser();
@@ -30,7 +30,7 @@ public class CLIArgumentHandler {
         } 
         finally {
             //Log command-line parsing is completed
-            logger.trace("Command-line argument processing completed");
+            //logger.trace("Command-line argument processing completed");
         }
     }
 

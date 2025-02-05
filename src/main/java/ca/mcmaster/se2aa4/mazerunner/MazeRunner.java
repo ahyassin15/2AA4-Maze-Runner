@@ -11,7 +11,7 @@ public class MazeRunner {
     private Direction direction;                                    // Current facing direction
 
     // Constructor initializes MazeRunner at the maze's entry point, facing right by default
-    public MazeRunner() {
+    public MazeRunner(Maze maze) {
         this.maze = maze;
         this.position = maze.getEntryPoint();
         this.direction = Direction.RIGHT;
@@ -20,7 +20,7 @@ public class MazeRunner {
     // Verifies whether the provided path successfully reaches the maze exit
     public boolean verifyPath(Maze maze, String path) {
         
-        logger.trace("Starting path verification...");
+        //logger.trace("Starting path verification...");
 
         // Convert path into its expanded (canonical) format
         path = toCanonicalPath(path);
@@ -44,13 +44,13 @@ public class MazeRunner {
             }
         }
 
-        logger.trace("Path verification complete.");
+        //logger.trace("Path verification complete.");
         return maze.checkExitPoint(position); // Check if the final position is at the exit
     }
 
     // Converts compacted path into expanded form (e.g. "3F2L" into "FFFLL")
     public static String toCanonicalPath(String path) {
-        logger.trace("Expanding path to canonical format...");
+        //logger.trace("Expanding path to canonical format...");
 
         StringBuilder expandedPath = new StringBuilder();
         int repeatCount = -1; // Stores number of times a movement should be repeated
@@ -69,13 +69,13 @@ public class MazeRunner {
         }
 
         String canonicalPath = expandedPath.toString();
-        logger.trace("Canonical path: " + canonicalPath);
+        //logger.trace("Canonical path: " + canonicalPath);
         return canonicalPath;
     }
 
     // Converts expanded path into compacted form (e.g. "FFFLL" into "3F2L")
     public static String toFactoredPath(String path) {
-        logger.trace("Compacting path representation...");
+        //logger.trace("Compacting path representation...");
 
         if (path.isEmpty()) return ""; // Return empty string if input is empty
 
@@ -100,7 +100,7 @@ public class MazeRunner {
         compactPath.append(currentChar);
 
         String factoredPath = compactPath.toString();
-        logger.trace("Factored path: " + factoredPath);
+        //logger.trace("Factored path: " + factoredPath);
 
         return factoredPath;
     }
