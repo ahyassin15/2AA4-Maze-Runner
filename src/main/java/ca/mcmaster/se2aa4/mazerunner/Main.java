@@ -64,7 +64,7 @@ public class Main {
 
         } catch (Exception e) {
             logger.error("Unexpected error occurred", e);
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

@@ -36,6 +36,10 @@ public class Maze {
         return mazeGrid[position.getY()][position.getX()];
     }
 
+    public Position getDimensions() {
+        return new Position(mazeGrid[0].length, mazeGrid.length);
+    }
+
     //Finds the entry point (first column with a passage)
     public Position getEntryPoint() {
         for (int col = 0; col < mazeGrid.length; col++) {

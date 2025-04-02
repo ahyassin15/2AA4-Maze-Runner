@@ -57,6 +57,12 @@ public class Position {
         }
     }
 
+    //Method to check if position is within the given dimensions of maze
+    public boolean checkWithinBounds(Position dimensions) {
+        return (x >= 0 && x < dimensions.getX() && 
+                y >= 0 && y < dimensions.getY());
+    }
+
     //Override toString method
     @Override
     public String toString() {

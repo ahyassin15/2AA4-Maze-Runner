@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ca.mcmaster.se2aa4.mazerunner.core.Direction;
+import ca.mcmaster.se2aa4.mazerunner.core.MazeCell;
 import ca.mcmaster.se2aa4.mazerunner.core.Position;
 
 public class MazeRunner {
@@ -31,15 +32,27 @@ public class MazeRunner {
         // Process each movement in the path
         for (char step : path.toCharArray()) {
             switch (step) {
-                case 'L' -> direction = direction.moveLeft();     // Turn left
-                case 'R' -> direction = direction.moveRight();    // Turn right
+                case 'L' -> {
+                    direction = direction.moveLeft(); // Turn left
+                    logger.info("L Current Pos", direction);
+                }
+
+                case 'R' -> {
+                    direction = direction.moveRight(); // Turn right
+                    logger.info("R: Current Pos", direction);
+                }
                 case 'F' -> {                                           
                     // Move forward in the current direction
                     Position nextPosition = position.move(direction);
-                    
-                    // If the new position is the exit, return true
-                    if (maze.checkExitPoint(nextPosition)) {
-                        return true;
+
+                    logger.info("F: Current Pos, Next Pos", position, nextPosition);
+
+                    if (!nextPosition.checkWithinBounds(maze.getDimensions())) {
+                        return false;
+                    }
+
+                    if (maze.getCell(nextPosition) == MazeCell.WALL) {
+                        return false;
                     }
 
                     position = nextPosition; // Update position
@@ -56,6 +69,7 @@ public class MazeRunner {
         logger.trace("Expanding path to canonical format...");
 
         StringBuilder expandedPath = new StringBuilder();
+        
         int repeatCount = -1; // Stores number of times a movement should be repeated
 
         for (char current : path.toCharArray()) {
