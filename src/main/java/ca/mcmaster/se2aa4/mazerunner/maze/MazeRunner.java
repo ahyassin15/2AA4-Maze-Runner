@@ -74,8 +74,13 @@ public class MazeRunner {
 
         for (char current : path.toCharArray()) {
             if (Character.isDigit(current)) {
-                repeatCount = Character.getNumericValue(current); // Store the numeric value
-            } else {
+                if (repeatCount == -1) {
+                    repeatCount = Character.getNumericValue(current);
+                } else {
+                    repeatCount *= 10;
+                    repeatCount += Character.getNumericValue(current);
+                }
+            } else if (current != ' ') {
                 if (repeatCount > 0) {
                     expandedPath.append(String.valueOf(current).repeat(repeatCount)); // Repeat the movement
                     repeatCount = -1; // Reset repeat count
