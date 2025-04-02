@@ -1,7 +1,12 @@
-package ca.mcmaster.se2aa4.mazerunner;
+package ca.mcmaster.se2aa4.mazerunner.solver;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import ca.mcmaster.se2aa4.mazerunner.core.Direction;
+import ca.mcmaster.se2aa4.mazerunner.core.Position;
+import ca.mcmaster.se2aa4.mazerunner.maze.Maze;
+import ca.mcmaster.se2aa4.mazerunner.maze.MazeRunner;
 
 public class RightHandSolver implements MazeSolver {
 

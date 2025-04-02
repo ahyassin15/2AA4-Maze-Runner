@@ -1,5 +1,8 @@
-package ca.mcmaster.se2aa4.mazerunner;
- 
+package ca.mcmaster.se2aa4.mazerunner.maze;
+
+import ca.mcmaster.se2aa4.mazerunner.core.MazeCell;
+import ca.mcmaster.se2aa4.mazerunner.core.Position;
+
 public class Maze {
 
     //2D array storing maze cells
