@@ -16,8 +16,8 @@ public class MazeImporter {
     //Reads a maze file and converts it into a Maze object
     public static Maze scanMaze(String inputFile) throws IOException{
 
-        //logger.trace("Initializing maze scan...");
-        //logger.info("Reading maze file: " + inputFile);
+        logger.trace("Initializing maze scan...");
+        logger.info("Reading maze file: " + inputFile);
         
         //Store maze lines in a list
         List<char[]> mazeLines = new ArrayList<>();
@@ -30,7 +30,7 @@ public class MazeImporter {
             }
 
         } catch (IOException e) {
-            //logger.error("An error occurred while reading the maze file: " + inputFile, e);
+            logger.error("An error occurred while reading the maze file: " + inputFile, e);
             throw e;
         }
         
@@ -39,7 +39,7 @@ public class MazeImporter {
 
         //Create Maze object
         Maze maze = new Maze(mazeGrid);
-        //logger.trace("Maze scan completed successfully");
+        logger.trace("Maze scan completed successfully");
 
         return maze;
     }
