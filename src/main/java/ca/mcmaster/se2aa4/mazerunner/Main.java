@@ -45,9 +45,9 @@ public class Main {
                 
                 String providedPath = cmdLine.getOptionValue("p");
 
-                MazeRunner mazeRunner = new MazeRunner(maze);
+                MazeRunner mazeRunner = new MazeRunner(maze, providedPath);
 
-                if (mazeRunner.verifyPath(maze, providedPath)) {
+                if (mazeRunner.verifyPath()) {
                     System.out.println("Path is valid");
                 } else {
                     System.out.println("Path is invalid");

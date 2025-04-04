@@ -25,12 +25,12 @@ public class MazeTest {
         for (File mazeFile : mazes) {
             Maze maze = MazeImporter.scanMaze(mazeFile.getAbsolutePath());
             logger.info("Maze Dimensions: {}\n", maze.getDimensions());
-
-            MazeRunner runner = new MazeRunner(maze);
-
+            
             String path = solver.solveMaze(maze);
             logger.info("Path: {}", path);
-            assertTrue(runner.verifyPath(maze, path));
+            
+            MazeRunner runner = new MazeRunner(maze, path);
+            assertTrue(runner.verifyPath());
         }
     }
 }

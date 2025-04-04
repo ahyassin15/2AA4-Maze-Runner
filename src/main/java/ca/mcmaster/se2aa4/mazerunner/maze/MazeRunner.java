@@ -1,12 +1,9 @@
 package ca.mcmaster.se2aa4.mazerunner.maze;
 
-import java.nio.file.Path;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ca.mcmaster.se2aa4.mazerunner.core.Direction;
-import ca.mcmaster.se2aa4.mazerunner.core.MazeCell;
 import ca.mcmaster.se2aa4.mazerunner.core.Position;
 
 public class MazeRunner {
@@ -15,45 +12,49 @@ public class MazeRunner {
     private Maze maze;                                              // Maze object (current maze)
     private Position position;                                      // Current position in the maze
     private Direction direction;                                    // Current facing direction
+    private MazePath path;                                          // MazePath object
 
     // Constructor initializes MazeRunner at the maze's entry point, facing right by default
-    public MazeRunner(Maze maze) {
+    public MazeRunner(Maze maze, String path) {
         this.maze = maze;
         this.position = maze.getEntryPoint();
         this.direction = Direction.RIGHT;
+        this.path = new MazePath(path);
+    }
+
+    public Maze getMaze() {
+        return maze;
+    }
+    
+    public Position getPosition() {
+        return position;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public Position goForward() {
+        return (position = position.move(direction));
+    }
+
+    public void makeLeftTurn() {
+        direction = direction.moveLeft();
+    }
+
+    public void makeRightTurn() {
+        direction = direction.moveRight();
     }
 
     // Verifies whether the provided path successfully reaches the maze exit
-    public boolean verifyPath(Maze maze, String path) {
+    public boolean verifyPath() {
         
         logger.trace("Starting path verification...");
 
-        // Convert path into its expanded (canonical) format
-        MazePath newPath = new MazePath(path);
-
         // Process each movement in the path
-        for (MazeStep instruction : newPath) {
-            char c = instruction.toCharacter();
-            
-            if (c == 'L') {
-                direction = direction.moveLeft();
-            } else if (c == 'R') {
-                direction = direction.moveRight();
-            } else if (c == 'F') {
-                Position nextPosition = position.move(direction);
-
-                //If the new position is a wall
-                if (!nextPosition.checkWithinBounds(maze.getDimensions())) {
-                    return false;
-                }
-
-                if (maze.getCell(nextPosition) == MazeCell.WALL) {
-                    return false;
-                }
-                
-                //Update position
-                position = nextPosition;
-            }
+        for (MazeStep instruction : path) {
+            if (!instruction.execute(this))
+                 return false;
         }
 
         logger.trace("Path verification complete.");

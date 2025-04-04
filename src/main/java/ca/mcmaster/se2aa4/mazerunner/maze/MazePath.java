@@ -64,7 +64,7 @@ public class MazePath implements Iterable<MazeStep> {
  
         //Iterate through path string
         for (int i = 1; i < path.size(); i++) {
-            if (path.get(i) == current) {
+            if (path.get(i).equals(current)) {
                 count++;
                 
             } else {
@@ -110,7 +110,7 @@ public class MazePath implements Iterable<MazeStep> {
         
         for (int i = 1; i < path.size(); i++) {
             
-            if (path.get(i) != current) {
+            if (!path.get(i).equals(current)) {
                 if (withSpaces) {
                     string_builder.append(" ");
                 }

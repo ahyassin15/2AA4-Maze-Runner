@@ -1,65 +1,60 @@
 package ca.mcmaster.se2aa4.mazerunner.core;
 
 public enum Direction {
-    
-    //Enum constants
-    UP, DOWN, LEFT, RIGHT;
 
-    //Method to determine new direction when turning left
-    public Direction moveLeft() {
-        switch (this) {
-            case UP: {
-                return LEFT;
-            }
-            case DOWN: {
-                return RIGHT;
-            }
-            case LEFT: {
-                return DOWN;
-            }
-            case RIGHT: {
-                return UP;
-            }
-        }
-        throw new IllegalStateException("Unexpected direction: " + this);
+    UP(0, -1), 
+    DOWN(0, 1), 
+    LEFT(-1, 0), 
+    RIGHT(1, 0);
+
+    private int dx; // Change in x
+    private int dy; // Change in y 
+
+    private Direction left;     
+    private Direction right;    
+    private Direction opposite; 
+
+    static {
+        UP.left = LEFT;
+        UP.right = RIGHT;
+        UP.opposite = DOWN;
+
+        DOWN.left = RIGHT;
+        DOWN.right = LEFT;
+        DOWN.opposite = UP;
+
+        LEFT.left = DOWN;
+        LEFT.right = UP;
+        LEFT.opposite = RIGHT;
+
+        RIGHT.left = UP;
+        RIGHT.right = DOWN;
+        RIGHT.opposite = LEFT;
     }
 
-    //Method to determine new direction when turning right
-    public Direction moveRight() {
-        switch (this) {
-            case UP: {
-                return RIGHT;
-            }
-            case DOWN: {
-                return LEFT;
-            }
-            case LEFT: {
-                return UP;
-            }
-            case RIGHT: {
-                return DOWN;
-            }
-        }
-        throw new IllegalStateException("Unexpected direction: " + this);
+    //Constructor to store movement values for each direction
+    Direction(int dx, int dy) {
+        this.dx = dx;
+        this.dy = dy;
     }
 
-    //Method to determine new direction when going in the opposite direction
+    protected int getDx() {
+        return dx;
+    }
+
+    protected int getDy() {
+        return dy;
+    }
+
     public Direction moveOpp() {
-        switch (this) {
-            case UP: {
-                return DOWN;
-            }
-            case DOWN: {
-                return UP;
-            }
-            case LEFT: {
-                return RIGHT;
-            }
-            case RIGHT: {
-                return LEFT;
-            }
-        }
-        throw new IllegalStateException("Unexpected direction: " + this);
+        return opposite;
     }
 
+    public Direction moveLeft() {
+        return left;
+    }
+
+    public Direction moveRight() {
+        return right;
+    }
 }

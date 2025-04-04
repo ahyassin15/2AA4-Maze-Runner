@@ -43,18 +43,11 @@ public class Position {
 
     //Move the position in the given direction
     public Position move(Direction direction) {
-        switch (direction) {
-            case UP:
-                return this.add(new Position(0, -1));
-            case DOWN:
-                return this.add(new Position(0, 1));
-            case LEFT:
-                return this.add(new Position(-1, 0));
-            case RIGHT:
-                return this.add(new Position(1, 0));
-            default:
-                throw new IllegalStateException("Unexpected direction: " + direction);
-        }
+        
+        int newX = x + direction.getDx(); 
+        int newY = y + direction.getDy(); 
+
+        return new Position(newX, newY); 
     }
 
     //Method to check if position is within the given dimensions of maze

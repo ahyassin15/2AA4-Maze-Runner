@@ -6,11 +6,15 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ca.mcmaster.se2aa4.mazerunner.maze.Maze;
-import ca.mcmaster.se2aa4.mazerunner.maze.MazePath;
 import ca.mcmaster.se2aa4.mazerunner.maze.MazeImporter;
 import ca.mcmaster.se2aa4.mazerunner.maze.MazeRunner;
 import ca.mcmaster.se2aa4.mazerunner.solver.MazeSolver;
 import ca.mcmaster.se2aa4.mazerunner.solver.RightHandSolver;
+import ca.mcmaster.se2aa4.mazerunner.maze.MazeStep;
+import ca.mcmaster.se2aa4.mazerunner.maze.MazePath;
+import ca.mcmaster.se2aa4.mazerunner.maze.MazeFwdStep;
+import ca.mcmaster.se2aa4.mazerunner.maze.MazeLeftStep;
+import ca.mcmaster.se2aa4.mazerunner.maze.MazeRightStep;
 
 public class PathTest {
     
@@ -69,5 +73,19 @@ public class PathTest {
         assertEquals(noSpaceFactPath, path.toFactoredForm());
         assertEquals(canonicalPath, path.toCanonicalForm(true));
         assertEquals(noSpaceCanPath, path.toCanonicalForm());
+    }
+
+    @Test
+    public void testMazeStep() {
+        MazeStep fwd = new MazeFwdStep();
+        MazeStep left = new MazeLeftStep();
+        MazeStep right = new MazeRightStep();
+
+        assertEquals('F', fwd.toCharacter());
+        assertEquals('L', left.toCharacter());
+        assertEquals('R', right.toCharacter());
+        assertEquals("F", fwd.toString());
+        assertEquals("L", left.toString());
+        assertEquals("R", right.toString());
     }
 }
