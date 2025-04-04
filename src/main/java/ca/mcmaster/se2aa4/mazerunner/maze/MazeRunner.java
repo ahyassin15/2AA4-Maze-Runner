@@ -1,5 +1,7 @@
 package ca.mcmaster.se2aa4.mazerunner.maze;
 
+import java.nio.file.Path;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,36 +29,30 @@ public class MazeRunner {
         logger.trace("Starting path verification...");
 
         // Convert path into its expanded (canonical) format
-        path = toCanonicalPath(path);
+        MazePath newPath = new MazePath(path);
 
         // Process each movement in the path
-        for (char step : path.toCharArray()) {
-            switch (step) {
-                case 'L' -> {
-                    direction = direction.moveLeft(); // Turn left
-                    logger.info("L Current Pos", direction);
+        for (MazeStep instruction : newPath) {
+            char c = instruction.toCharacter();
+            
+            if (c == 'L') {
+                direction = direction.moveLeft();
+            } else if (c == 'R') {
+                direction = direction.moveRight();
+            } else if (c == 'F') {
+                Position nextPosition = position.move(direction);
+
+                //If the new position is a wall
+                if (!nextPosition.checkWithinBounds(maze.getDimensions())) {
+                    return false;
                 }
 
-                case 'R' -> {
-                    direction = direction.moveRight(); // Turn right
-                    logger.info("R: Current Pos", direction);
+                if (maze.getCell(nextPosition) == MazeCell.WALL) {
+                    return false;
                 }
-                case 'F' -> {                                           
-                    // Move forward in the current direction
-                    Position nextPosition = position.move(direction);
-
-                    logger.info("F: Current Pos, Next Pos", position, nextPosition);
-
-                    if (!nextPosition.checkWithinBounds(maze.getDimensions())) {
-                        return false;
-                    }
-
-                    if (maze.getCell(nextPosition) == MazeCell.WALL) {
-                        return false;
-                    }
-
-                    position = nextPosition; // Update position
-                }
+                
+                //Update position
+                position = nextPosition;
             }
         }
 
@@ -64,65 +60,21 @@ public class MazeRunner {
         return maze.checkExitPoint(position); // Check if the final position is at the exit
     }
 
-    // Converts compacted path into expanded form (e.g. "3F2L" into "FFFLL")
+    //Converts path into expanded form ("2F3L4R" to "FFLLLRRRR")
     public static String toCanonicalPath(String path) {
+
         logger.trace("Expanding path to canonical format...");
-
-        StringBuilder expandedPath = new StringBuilder();
-        
-        int repeatCount = -1; // Stores number of times a movement should be repeated
-
-        for (char current : path.toCharArray()) {
-            if (Character.isDigit(current)) {
-                if (repeatCount == -1) {
-                    repeatCount = Character.getNumericValue(current);
-                } else {
-                    repeatCount *= 10;
-                    repeatCount += Character.getNumericValue(current);
-                }
-            } else if (current != ' ') {
-                if (repeatCount > 0) {
-                    expandedPath.append(String.valueOf(current).repeat(repeatCount)); // Repeat the movement
-                    repeatCount = -1; // Reset repeat count
-                } else {
-                    expandedPath.append(current); // Append the movement as-is
-                }
-            }
-        }
-
-        String canonicalPath = expandedPath.toString();
+        String canonicalPath = new MazePath(path).toCanonicalForm();
         logger.trace("Canonical path: " + canonicalPath);
 
         return canonicalPath;
     }
 
-    // Converts expanded path into compacted form (e.g. "FFFLL" into "3F2L")
+    //Converts path into factored form ("FFLLLRRRR" to "2F3L4R")
     public static String toFactoredPath(String path) {
-        logger.trace("Compacting path representation...");
 
-        if (path.isEmpty()) return ""; // Return empty string if input is empty
-
-        StringBuilder compactPath = new StringBuilder();
-        char currentChar = path.charAt(0); // First movement character
-        int count = 1; // Count occurrences of the current movement
-
-        // Iterate through the path string
-        for (int i = 1; i < path.length(); i++) {
-            if (path.charAt(i) == currentChar) {
-                count++; // Increase count if it's the same movement
-            } else {
-                if (count > 1) compactPath.append(count); // Append count if greater than 1
-                compactPath.append(currentChar); // Append movement character
-                currentChar = path.charAt(i); // Update current movement
-                count = 1; // Reset count
-            }
-        }
-
-        // Append the last character sequence
-        if (count > 1) compactPath.append(count);
-        compactPath.append(currentChar);
-
-        String factoredPath = compactPath.toString();
+        logger.trace("Expanding path to factored format...");
+        String factoredPath = new MazePath(path).toFactoredForm(true);
         logger.trace("Factored path: " + factoredPath);
 
         return factoredPath;
