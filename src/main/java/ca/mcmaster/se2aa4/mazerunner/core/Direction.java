@@ -7,8 +7,7 @@ public enum Direction {
     LEFT(-1, 0), 
     RIGHT(1, 0);
 
-    private int dx; // Change in x
-    private int dy; // Change in y 
+    private int dx, dy; // Change in x & y
 
     private Direction left;     
     private Direction right;    
@@ -38,11 +37,11 @@ public enum Direction {
         this.dy = dy;
     }
 
-    protected int getDx() {
+    protected int getChangeinX() {
         return dx;
     }
 
-    protected int getDy() {
+    protected int getChangeinY() {
         return dy;
     }
 

@@ -43,9 +43,9 @@ public class Position {
 
     //Move the position in the given direction
     public Position move(Direction direction) {
-        
-        int newX = x + direction.getDx(); 
-        int newY = y + direction.getDy(); 
+
+        int newX = x + direction.getChangeinX(); 
+        int newY = y + direction.getChangeinY(); 
 
         return new Position(newX, newY); 
     }
